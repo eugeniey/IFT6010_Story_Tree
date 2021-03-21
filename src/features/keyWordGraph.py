@@ -3,13 +3,13 @@ import pandas as pd
 import re
 import operator
 import networkx as nx
-import community
+import community 
 
 class KeywordGraph:
 
     keywords = None
 
-    bipartite = None
+    bipartite = pd.DataFrame()
 
     nodes = None
 
@@ -30,7 +30,7 @@ class KeywordGraph:
         return(self.keywords)
 
     def get_bipartite(self, keep_in_memory= False):
-        if self.bipartite:
+        if not self.bipartite.empty:
             return self.bipartite
         else:
             data = self._compute_bipartite(self.keywords)
@@ -129,22 +129,22 @@ class KeywordGraph:
                 G = G.to_undirected()
 
             # Calcul des clusters
-            dendo = community.generate_dendogram(G)
+            dendo = community.generate_dendrogram(G)
 
             # Calcul de la betweeness centrality
             #betCen = nx.betweenness_centrality(G,weight="weight")
             betCen = nx.betweenness_centrality(G) # c'est mieux comme ca... un peu arbitrairement d'ailleurs...
 
             # Mise en forme
-            res = pd.DataFrame(pd.Series(community.best_partition(G)).order())
+            res = pd.DataFrame(pd.Series(community.best_partition(G)).sort_values())
             res.columns = ["cluster"]
             res["label"] = res.index
             if for_gephi :
                 res["id"] = res.index
             res["betcen"] = 0
             for wor in G.nodes():
-                res.ix[wor,"betcen"] = betCen[wor]
-            res = res.sort(["cluster","betcen"],ascending=[True,False])
+                res.loc[wor,"betcen"] = betCen[wor]
+            res = res.sort_values(["cluster","betcen"],ascending=[True,False])
 
             # transformation des noms des clusters en strings
             res.cluster = ["cl_" + str(s) for s in res.cluster]
@@ -165,7 +165,7 @@ class KeywordGraph:
                          edge_list_length)
 
         # Table d'association document<->mot-clé
-        bipartite = self.get_bipartite()
+        bipartite = self.get_bipartite(keep_in_memory= False)
 
         # donne a chaque cluster de mot le nom des 10 premiers mots du cluster
         clusters_with_names, cluster_names = self._give_a_name_to_clusters(clusters)
@@ -187,14 +187,14 @@ class KeywordGraph:
         clus_names.index = clus_names["cluster"]
         for cl in clus_names["cluster"] :
             st = ""
-            subset = clusters.ix[clusters.cluster == cl]
+            subset = clusters.loc[clusters.cluster == cl]
             subset.index = range(len(subset.index))
             for i in range(10) :
                 try:
                     st += "/" + subset.label[i]
                 except KeyError:
                     pass
-            clus_names.ix[cl,"name"] = st
+            clus_names.loc[cl,"name"] = st
         clusters_with_names = pd.merge(clus_names,clusters,on=["cluster"])
 
         return clusters_with_names, clus_names
