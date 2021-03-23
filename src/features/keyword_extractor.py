@@ -26,7 +26,6 @@ def add_ner(text):
         if(ent.label_ == "PER" or  ent.label_=="ORG" or ent.label_=="GPE"):
             ner.append(ent.text)
     return ner
-
 def bert_max_sum_sim(doc_embedding, word_embeddings, words, top_n, nr_candidates=10):
     # Calculate distances and extract keywords
     distances = cosine_similarity(doc_embedding, candidate_embeddings)
@@ -161,6 +160,17 @@ def keyword_extractor(text, number_keyword=10):
     return  keyword_list_copy
 
 
+def keyword_extraction_baseline(text, number_keyword=40, language = "en", max_ngram_size = 1, deduplication_thresold = 0.9, deduplication_algo = 'seqm', windowSize = 1):
+    kw_extractor = yake.KeywordExtractor(lan=language, n=max_ngram_size, dedupLim=deduplication_thresold, dedupFunc=deduplication_algo, windowsSize=windowSize, top=number_keyword, features=None)
+    keywords = kw_extractor.extract_keywords(text)
+    keywords_extractor = [i[0] for i in keywords] 
+
+    return keywords_extractor
+
+
+def keyword_extraction_baseline_gensim(text, number_keyword=40):
+    return keywords_gensim(text, words=number_keyword, lemmatize = True).split('\n')
+
 
 def precision(keyword,target):
     count = 0 
@@ -197,7 +207,7 @@ def f_measure(keyword,target):
     re =recall(keyword,target)
     return (2*pre*re)/(pre+re),pre,re
 
-
+"""
 def displayGraph(textGraph):
 
     graph = nx.Graph()
@@ -214,3 +224,4 @@ def displayGraph(textGraph):
             labels={node: node for node in graph.nodes()})
     plt.axis('off')
     plt.show()
+"""
