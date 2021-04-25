@@ -1,19 +1,21 @@
 import numpy as np
-
 import pandas as pd
+import os
 
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 
 from scipy import spatial
 
+from nltk.stem import WordNetLemmatizer
+from nltk.stem.snowball import SnowballStemmer
 
 import re
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
+nltk.download('wordnet')
 from nltk.corpus import stopwords
-
 
 
 '''
@@ -120,6 +122,70 @@ def get_corpus_tf_idf(dataframe, colomn,ngram=1):
     dataframe['VECTOR']=dataframe['PREPROCESSING_TEXT'].apply(document_vector,dict_tf_idf=dict_tf_idf)
 
     return dataframe,dict_tf_idf
+
+
+# to lower case
+# remove digit
+# remove ponctuation 
+# remove stop word
+# lemma
+# remove single characters and empty token
+def preprocessing(text):
+    text=text.lower()
+
+    text = ''.join([i for i in text if not i.isdigit()])
+
+    tokens = nltk.word_tokenize(text)
+
+    symbols = "!\"#$%&()*+-./:;<=>?@[\]^_`{|}~\n"
+    for i in symbols:
+        tokens = np.char.replace(tokens, i, '')
+
+    stop_words = stopwords.words('english')
+
+    lemmatizer = WordNetLemmatizer()
+
+    new_tokens=[ lemmatizer.lemmatize(token) for token in tokens if token not in stop_words]
+
+    lemma_tokens = [token for token in tokens]
+
+    return_tokens=[token for token in new_tokens if len(token)>1]
+    
+    return return_tokens
+
+
+
+def latest_tfidf(doc, allDocs):
+    """
+    doc: list of string. Represents text of an article
+    allDocs: list of list of string
+    """
+    
+    dict_tf ={}
+
+    for term in doc:
+        term_in_document = doc.count(term) 
+        len_of_document = float(len(doc)) 
+        normalized_tf = term_in_document / len_of_document 
+
+        num_docs_with_given_term = 0
+        # print(num_docs_with_given_term)
+        for docs in allDocs:
+            if term in docs:
+                num_docs_with_given_term += 1
+
+        if num_docs_with_given_term > 10:
+        # Total number of documents
+            total_num_docs = len(allDocs) 
+
+            idf_val = np.log(float(total_num_docs) / num_docs_with_given_term)
+            dict_tf[term]=idf_val*normalized_tf
+        else:
+            dict_tf[term]= 0 
+
+    return dict_tf
+
+
 
 '''
 example of execution 
