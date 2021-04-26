@@ -82,7 +82,6 @@ def preprocessing(text):
     for i in symbols:
         tokens = np.char.replace(tokens, i, '')
 
-
     stop_words = stopwords.words('english')
 
     new_tokens=[token for token in tokens if token not in stop_words]
@@ -145,7 +144,7 @@ def preprocessing(text):
 
     lemmatizer = WordNetLemmatizer()
 
-    new_tokens=[ lemmatizer.lemmatize(token) for token in tokens if token not in stop_words]
+    new_tokens = [ lemmatizer.lemmatize(token) for token in tokens if token not in stop_words]
 
     lemma_tokens = [token for token in tokens]
 
