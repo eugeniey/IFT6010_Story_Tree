@@ -1,7 +1,7 @@
 Story_Forest
 ==============================
 
-A short description of the project.
+The purpose of this project is to attempt to re-implement the system discussed in the article: "Growing Story Forest Online from Massive Breaking News". The system that was introduced in the paper is designed to find and organize events in story trees from a large amount of trending news and breaking news. This system was created to quickly process a large amount of breaking news data, and its news structure is likely to be captured by a tree, a timeline or a flat structure. In order to re-implement the project, we are following the main steps of the system presented in the paper while trying new approaches to see if we can obtain better performance. The authors of that paper tested 4 types of structures and concluded that the tree structure outperforms all other structures. Thus, we will implement the tree structure. Contrary to what has been implemented by the authors, our system is being implemented entirely in python rather than java like the original paper. 
 
 Project Organization
 ------------
@@ -10,12 +10,6 @@ Project Organization
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
     │
@@ -23,20 +17,12 @@ Project Organization
     │                         the creator's initials, and a short `-` delimited description, e.g.
     │                         `1.0-jqp-initial-data-exploration`.
     │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
-    │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
     │   │
     │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
     │   │
     │   ├── features       <- Scripts to turn raw data into features for modeling
     │   │   └── build_features.py
@@ -45,12 +31,6 @@ Project Organization
     │   │   │                 predictions
     │   │   ├── predict_model.py
     │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
-
 
 --------
 
